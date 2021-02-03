@@ -12,6 +12,10 @@ namespace Api
             return new JsonResult("OK");
         }
 
+        /// <summary>
+        /// Retrieves all Claim Types and Values from the Identity token
+        /// </summary>
+        /// <returns></returns>
         [Route("identity")]
         [Authorize]
         public IActionResult Identity()

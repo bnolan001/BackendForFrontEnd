@@ -1,0 +1,20 @@
+<h1 id="tableLabel">User Info</h1>
+
+<p>This component demonstrates fetching data from the server and proxied API.  If the user is not logged in then they will be redirected to the Identity Login page.</p>
+
+<p *ngIf="!userInfo"><em>Loading...</em></p>
+<h2>{{ userInfo.name }}</h2>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="userInfo">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let claim of claims">
+      <td>{{ claim.type }}</td>
+      <td>{{ claim.value }}</td>
+    </tr>
+  </tbody>
+</table>
