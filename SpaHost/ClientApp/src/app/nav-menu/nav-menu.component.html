@@ -25,6 +25,9 @@
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-dark" [routerLink]="['/fetch-authenticated-data']">Fetch User data</a>
           </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']" *ngIf="authService.isAuthenticated()">
+            <a class="nav-link text-dark" [routerLink]="['/guarded-route']">Guarded Route</a>
+          </li>
         </ul>
       </div>
     </div>
