@@ -40,6 +40,7 @@ namespace SpaHost
 
             app.UseHttpsRedirection();
 
+            // Handles the more strict implementation of Cookie restrictions in browsers
             app.UseMiddleware<StrictSameSiteExternalAuthenticationMiddleware>();
             app.UseAuthentication();
 
@@ -64,6 +65,8 @@ namespace SpaHost
                     // The proxied controllers need the bearer token
                     proxyPipeline.Use(async (context, next) =>
                     {
+                        // If we are authenticted than we should be able to get the access token
+                        // from the context associated with this session
                         var token = await context.GetTokenAsync("access_token");
                         context.Request.Headers.Add("Authorization", $"Bearer {token}");
 
@@ -100,6 +103,9 @@ namespace SpaHost
             // reboot or deployment.
             services.AddDistributedMemoryCache();
 
+            // We'll keep the authenticated session internal but we need to send something over to
+            // the SPA so we know how to associate it with a session. We'll use a cookie to share
+            // with the SPA for associating it to a session
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "cookies";
