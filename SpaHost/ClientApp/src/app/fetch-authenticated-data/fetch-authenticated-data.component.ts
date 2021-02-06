@@ -14,20 +14,20 @@ export class FetchAuthenticatedDataComponent {
     private authService: AuthenticationService) {
   }
 
- async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     // Attempt to get the authenticated user's name
-   if (this.authService.isAuthenticated()) {
-     this.userName = this.authService.UserName;
+    if (this.authService.isAuthenticated()) {
+      this.userName = this.authService.UserName;
 
-     // Request the claims for the user from the API endpoint
-     this.http.get<Claim[]>('api/test/identity').subscribe(result => {
-       this.claims = result;
-     }, error => console.error(error));
-   }
-   else {
-     let currentLocation = window.location.href;
-     this.authService.authenticateUser(currentLocation);
-   }
+      // Request the claims for the user from the API endpoint
+      this.http.get<Claim[]>('api/test/identity').subscribe(result => {
+        this.claims = result;
+      }, error => console.error(error));
+    }
+    else {
+      // Authenticate then return back to this page
+      this.authService.authenticateUser("fetch-authenticated-data");
+    }
   }
 }
 

@@ -29,6 +29,10 @@ export class AuthenticationService {
   public authenticateUser(redirect: string): void {
     window.location.href = `accounts?redirect=${redirect}`;
   }
+
+  public logout(): void {
+    window.location.href = 'accounts/logout';
+  }
 }
 
 interface UserInfo {

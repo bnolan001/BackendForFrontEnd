@@ -12,6 +12,13 @@ export class AuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.authService.isAuthenticated();
+    // If the user isn't authenticted then call the authentication request from the authService and pass the
+    // route the user was trying to go to so they can be properly redirected.
+    if (!this.authService.isAuthenticated()) {
+      this.authService.authenticateUser(next.routeConfig.path);
+    }
+    else {
+      return true;
+    }
   }
 }

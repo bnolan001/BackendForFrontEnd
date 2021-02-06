@@ -3,7 +3,7 @@
 <p>This component demonstrates fetching data from the server and proxied API.  If the user is not logged in then they will be redirected to the Identity Login page.</p>
 
 <h2>{{ userName }}</h2>
-<p *ngIf="!userInfo"><em>Loading...</em></p>
+<p *ngIf="!userName"><em>Loading...</em></p>
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="userName">
   <thead>
     <tr>

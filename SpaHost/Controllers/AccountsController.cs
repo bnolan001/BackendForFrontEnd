@@ -14,13 +14,42 @@ namespace SpaHost.Controllers
         /// force the user to login via the configured, Identity Server, service.
         /// </summary>
         /// <param name="redirect">
-        /// The page to go to once the user has logged in through Identity Server
+        /// The component to go to once the user has logged in through Identity Server
         /// </param>
         /// <returns>Redirect request</returns>
         [Authorize]
         public IActionResult Index(string redirect)
         {
-            return Redirect(redirect);
+            string path;
+            switch (redirect)
+            {
+                case "fetch-data":
+                    path = "/fetch-data";
+                    break;
+
+                case "fetch-authenticated-data":
+                    path = "/fetch-authenticated-data";
+                    break;
+
+                case "guarded-route":
+                    path = "/guarded-route";
+                    break;
+
+                case "counter":
+                    path = "/counter";
+                    break;
+
+                default:
+                    path = "/";
+                    break;
+            }
+            return Redirect(path);
+        }
+
+        [Authorize]
+        public IActionResult Logout()
+        {
+            return SignOut("cookies", "oidc");
         }
     }
 }

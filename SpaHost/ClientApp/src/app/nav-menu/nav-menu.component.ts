@@ -18,4 +18,12 @@ export class NavMenuComponent {
   toggle() {
     this.isExpanded = !this.isExpanded;
   }
+
+  login() {
+    this.authService.authenticateUser("");
+  }
+
+  logout() {
+    this.authService.logout();
+  }
 }
