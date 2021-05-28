@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,7 +64,7 @@ namespace SpaHost
                     // The proxied controllers need the bearer token
                     proxyPipeline.Use(async (context, next) =>
                     {
-                        // If we are authenticted than we should be able to get the access token
+                        // If we are authenticated than we should be able to get the access token
                         // from the context associated with this session
                         var token = await context.GetTokenAsync("access_token");
                         context.Request.Headers.Add("Authorization", $"Bearer {token}");
