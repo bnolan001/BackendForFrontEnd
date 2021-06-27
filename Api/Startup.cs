@@ -1,18 +1,28 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Api
 {
     public class Startup
     {
-        public Startup()
+        public Startup(IConfiguration configuration)
         {
+            Configuration = configuration;
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public IConfiguration Configuration { get; }
+
+        public void Configure(IApplicationBuilder app, ILogger<Startup> logger)
         {
+            logger.LogInformation("Starting configuration");
             app.UseDeveloperExceptionPage();
 
             app.UseRouting();

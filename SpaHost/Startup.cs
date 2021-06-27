@@ -32,7 +32,6 @@ namespace SpaHost
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             logger.LogInformation("Starting configuration");
-            logger.LogInformation("Test Error");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

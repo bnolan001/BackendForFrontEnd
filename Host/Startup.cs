@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Host
@@ -14,13 +16,17 @@ namespace Host
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Log.Logger = new LoggerConfiguration()
+                 .ReadFrom.Configuration(configuration)
+                 .CreateLogger();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
         public IConfiguration Configuration { get; }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILogger<Startup> logger)
         {
+            logger.LogInformation("Starting configuration");
             app.UseDeveloperExceptionPage();
 
             app.UseMiddleware<StrictSameSiteExternalAuthenticationMiddleware>();
@@ -28,12 +34,12 @@ namespace Host
 
             app.Use(async (context, next) =>
             {
-                // We want the entire application to enforce authentication from the start
-                if (!context.User.Identity.IsAuthenticated)
+                    // We want the entire application to enforce authentication from the start
+                    if (!context.User.Identity.IsAuthenticated)
                 {
-                    // No need to have a custom page for authentication. This call will redirect the
-                    // user to the Identity Server login page
-                    await context.ChallengeAsync();
+                        // No need to have a custom page for authentication. This call will redirect
+                        // the user to the Identity Server login page
+                        await context.ChallengeAsync();
                     return;
                 }
 
@@ -50,18 +56,18 @@ namespace Host
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
-                    // .RequireAuthorization();
-                    endpoints.MapReverseProxy(proxyPipeline =>
-                    {
-                        // The proxied controllers need the bearer token
-                        proxyPipeline.Use(async (context, next) =>
+                        // .RequireAuthorization();
+                        endpoints.MapReverseProxy(proxyPipeline =>
                         {
-                            var token = await context.GetTokenAsync("access_token");
-                            context.Request.Headers.Add("Authorization", $"Bearer {token}");
+                                // The proxied controllers need the bearer token
+                                proxyPipeline.Use(async (context, next) =>
+                                    {
+                                var token = await context.GetTokenAsync("access_token");
+                                context.Request.Headers.Add("Authorization", $"Bearer {token}");
 
-                            await next().ConfigureAwait(false);
+                                await next().ConfigureAwait(false);
+                            });
                         });
-                    });
                 });
         }
 
