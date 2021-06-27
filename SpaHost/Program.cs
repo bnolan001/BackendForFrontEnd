@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SpaHost
 {
@@ -13,12 +10,16 @@ namespace SpaHost
     {
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureLogging(logger =>
-                {
-                    logger.ClearProviders();
-                    logger.AddConsole();
-                    logger.AddDebug();
-                })
+                        .ConfigureAppConfiguration(config =>
+                        {
+                            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+                            config
+                                // Used for local settings like connection strings.
+                                .AddJsonFile("appsettings.json", false, true)
+                                .AddJsonFile($"appsettings.{environment}.json", false, true);
+                        })
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

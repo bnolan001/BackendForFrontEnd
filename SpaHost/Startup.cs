@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using SpaHost.Internal;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace SpaHost
@@ -17,14 +20,19 @@ namespace SpaHost
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
+            logger.LogInformation("Starting configuration");
+            logger.LogInformation("Test Error");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -41,6 +49,7 @@ namespace SpaHost
 
             // Handles the more strict implementation of Cookie restrictions in browsers
             app.UseMiddleware<StrictSameSiteExternalAuthenticationMiddleware>();
+            app.UseMiddleware<ErrorMiddleware>();
             app.UseAuthentication();
 
             app.UseStaticFiles();
@@ -90,6 +99,7 @@ namespace SpaHost
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Log.Information("Starting configuration of services");
             services.AddReverseProxy()
                 .LoadFromConfig(Configuration.GetSection("ReverseProxy"));
             // We want to enable the automatic management of tokens, auto refresh, in-memory storage
