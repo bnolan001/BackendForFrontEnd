@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using System;
 
 namespace Host
 {
@@ -14,12 +10,14 @@ namespace Host
     {
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging(logger =>
+            .ConfigureAppConfiguration(config =>
                 {
-                    logger.ClearProviders();
-                    logger.AddConsole();
-                    logger.AddDebug();
+                    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+                    config.AddJsonFile("appsettings.json", false, true)
+                        .AddJsonFile($"appsettings.{environment}.json", false, true);
                 })
+                .UseSerilog()
                 .UseStartup<Startup>();
 
         public static void Main(string[] args)
