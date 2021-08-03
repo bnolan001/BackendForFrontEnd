@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,11 @@ namespace SpaHost.Controllers
 {
     public class AccountsController : Controller
     {
+        private readonly ILogger<AccountsController> _logger;
+        public AccountsController(ILogger<AccountsController> logger)
+        {
+            _logger = logger;
+        }
         /// <summary>
         /// This MVC controller will serve as the central point for the SPA to go to in order to
         /// force the user to login via the configured, Identity Server, service.
@@ -20,6 +26,7 @@ namespace SpaHost.Controllers
         [Authorize]
         public IActionResult Index(string redirect)
         {
+            _logger.LogInformation($"Redirect parementer set to '{redirect}'");
             string path;
             switch (redirect)
             {
@@ -43,12 +50,15 @@ namespace SpaHost.Controllers
                     path = "/";
                     break;
             }
+            _logger.LogInformation($"Redirecting user to '{path}'");
+
             return Redirect(path);
         }
 
         [Authorize]
         public IActionResult Logout()
         {
+            _logger.LogInformation($"Logging out user {User?.Identity?.Name}");
             return SignOut("cookies", "oidc");
         }
     }

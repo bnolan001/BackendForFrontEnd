@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 
 namespace Api
@@ -7,8 +8,15 @@ namespace Api
     [Route("test")]
     public class TestController : ControllerBase
     {
+        private readonly ILogger<TestController> _logger;
+
+        public TestController(ILogger<TestController> logger)
+        {
+            _logger = logger;
+        }
         public IActionResult Get()
         {
+            _logger.LogDebug("Request received");
             return new JsonResult("OK");
         }
 
@@ -20,6 +28,7 @@ namespace Api
         [Authorize]
         public IActionResult Identity()
         {
+            _logger.LogInformation($"Building claims list for {User?.Identity?.Name}");
             var claims = from c in User.Claims select new { c.Type, c.Value };
 
             return new JsonResult(claims);
