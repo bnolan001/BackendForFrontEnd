@@ -9,20 +9,6 @@ namespace SpaHost
 {
     public class Program
     {
-        public static IHostBuilder CreateHostBuilder(string[] args) {
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            return Host.CreateDefaultBuilder(args)
-                        .ConfigureAppConfiguration(config => config
-                // Used for local settings like connection strings.
-                .AddConfiguration(GetConfiguration()))        
-                .UseSerilog()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.CaptureStartupErrors(true);
-                    webBuilder.UseIIS();
-                });
-        }
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             var configuration = GetConfiguration();
@@ -39,8 +25,7 @@ namespace SpaHost
             try
             {
                 ConfigureLogging();
-               // CreateWebHostBuilder(args).Build().Run();
-                CreateHostBuilder(args).Build().Run();
+                CreateWebHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
