@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IdentityModel.AspNetCore
+namespace SpaHost.Internal
 {
     // Fixes for Safari
     // https://brockallen.com/2019/01/11/same-site-cookies-asp-net-core-and-external-authentication-providers/
@@ -41,6 +41,7 @@ namespace IdentityModel.AspNetCore
                     if (location != null)
                     {
                         ctx.Response.StatusCode = 200;
+                        ctx.Response.ContentType = "text/html";
                         var html = $@"
                         <html><head>
                             <meta http-equiv='refresh' content='0;url={location}' />

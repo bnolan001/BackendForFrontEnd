@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,13 @@ namespace SpaHost.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly ILogger<UsersController> _logger;
+
+        public UsersController(ILogger<UsersController> logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Retrieves the name of the Authenticated user
         /// </summary>
@@ -19,6 +27,7 @@ namespace SpaHost.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            _logger.LogInformation($"Getting user details for {User?.Identity?.Name}");
             var user = User?.Identity;
             return Ok(new
             {

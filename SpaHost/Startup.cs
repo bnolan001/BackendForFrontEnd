@@ -1,4 +1,3 @@
-using IdentityModel.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,7 +47,6 @@ namespace SpaHost
 
             // Handles the more strict implementation of Cookie restrictions in browsers
             app.UseMiddleware<StrictSameSiteExternalAuthenticationMiddleware>();
-            app.UseMiddleware<ErrorMiddleware>();
             app.UseAuthentication();
 
             app.UseStaticFiles();
