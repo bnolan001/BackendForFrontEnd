@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,7 +24,7 @@ namespace SpaHost.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            _logger.LogInformation($"Getting user details for {User?.Identity?.Name}");
+            _logger.LogInformation($"Getting user details for {User?.Claims?.FirstOrDefault(x => x.Type.Equals("sid"))}");
             var user = User?.Identity;
             return Ok(new
             {
