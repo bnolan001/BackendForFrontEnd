@@ -28,7 +28,7 @@ namespace Api
         [Authorize]
         public IActionResult Identity()
         {
-            _logger.LogInformation($"Building claims list for {User?.Identity?.Name}");
+            _logger.LogInformation($"Building claims list for {User.Claims.FirstOrDefault(x => x.Type.Equals("sid"))}");
             var claims = from c in User.Claims select new { c.Type, c.Value };
 
             return new JsonResult(claims);
